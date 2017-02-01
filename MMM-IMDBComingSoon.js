@@ -16,7 +16,6 @@ Module.register("MMM-IMDBComingSoon", {
             this.reloadData();
             this.reloadDataTimerID = setInterval(this.reloadData(), this.config.reloadInterval);
         }
-        this.updateDom(this.config.animationSpeed);
     },
 
     getHeader: function () {
