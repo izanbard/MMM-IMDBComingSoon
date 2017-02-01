@@ -65,8 +65,8 @@ Module.register("MMM-IMDBComingSoon", {
         releaseDate.classList.add("bright", "xsmall");
         var rDate = new Date();
         rDate.setFullYear(
-            this.movieList[this.activeItem].releaseDate.slice(0,4),
-            this.movieList[this.activeItem].releaseDate.slice(4,6),
+            this.movieList[this.activeItem].releaseDate.slice(0, 4),
+            this.movieList[this.activeItem].releaseDate.slice(4, 6),
             this.movieList[this.activeItem].releaseDate.slice(6)
         );
         releaseDate.innerHTML = "Date: " + rDate.toDateString();
@@ -81,7 +81,7 @@ Module.register("MMM-IMDBComingSoon", {
         plot.classList.add("bright", "xsmall");
         var editedPlot = this.movieList[this.activeItem].plot;
         if (editedPlot.length > 250) {
-            editedPlot = editedPlot.slice(0,247) + "...";
+            editedPlot = editedPlot.slice(0, 247) + "...";
         }
         plot.innerHTML = editedPlot;
         wrapper.appendChild(plot);
@@ -93,42 +93,79 @@ Module.register("MMM-IMDBComingSoon", {
         return wrapper;
     },
 
-    socketNotificationReceived: function (notification, payload) {
-        if (notification === "IMDB_COMING_SOON_NEW_DATA") {
-            if (!payload.error) {
-                this.error = false;
-                this.activeItem = 0;
-                this.movieList = payload.movieList;
-                if (!this.loaded) {
-                    this.loaded = true;
-                    this.cycleListTimerID = setInterval(this.updateDom(this.config.animationSpeed), this.config.dataSwapInterval);
-                }
-            } else {
-                this.loaded = false;
-                this.error = true;
-                this.errorMessage = payload.errorMessage;
-                if (this.cycleListTimerID !== undefined) {
-                    clearInterval(this.cycleListTimerID);
-                }
-                setTimeout(this.reloadData(), 60 * 1000)
-            }
-            this.updateDom(this.config.animationSpeed);
-        }
-    },
-
-    reloadData: function () {
-        var now = new Date();
-        this.year = now.getFullYear();
-        this.month = ("0" + (now.getMonth()+1)).slice(-2);
-        this.sendSocketNotification("REQUEST_LIST_CONTENT", {key: this.config.apikey, year: this.year, month: this.month});
-    },
-
     checkConfig: function () {
-        if (this.config.apikey === "You Must Change This Value"){
+        if (this.config.apikey === "You Must Change This Value") {
             this.errorMessage = "Invalid API Key!";
             return false;
         }
         return true;
+    },
+
+    getData: function (apikey, year, month) {
+        var url = "http://www.myapifilms.com/imdb/comingSoon?token=" + apikey + "&format=json&language=en-gb&date=" + year + "-" + month;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, false);
+        xhr.send();
+        return JSON.parse(xhr.responseText);
+    },
+
+    reloadData: function (payload) {
+        var now = new Date();
+        this.year = now.getFullYear();
+        this.month = ("0" + (now.getMonth() + 1)).slice(-2);
+        this.error = false;
+        this.errorMessage = "";
+        this.movieList = [];
+        var nextyear, nextmonth;
+        nextyear = payload.year;
+        nextmonth = parseInt(this.month, 10) + 1;
+        if (nextmonth >= 13) {
+            nextmonth = 1;
+            nextyear = (parseInt(nextyear, 10) + 1).toString();
+        }
+        nextmonth = ("0" + nextmonth).slice(-2);
+
+        this.processlist(this.getData(this.config.apikey, this.year, this.month));
+        this.processlist(this.getData(this.config.apikey, nextyear, nextmonth));
+
+        if (this.error) {
+            this.activeItem = 0;
+            if (!this.loaded) {
+                this.loaded = true;
+                this.cycleListTimerID = setInterval(this.updateDom(this.config.animationSpeed), this.config.dataSwapInterval);
+            }
+        } else {
+            this.loaded = false;
+            if (this.cycleListTimerID !== undefined) {
+                clearInterval(this.cycleListTimerID);
+            }
+            setTimeout(this.reloadData(), 60 * 1000)
+        }
+        this.updateDom(this.config.animationSpeed);
+
+    },
+
+    processlist: function (list) {
+        var i, j;
+        if (list.error !== undefined) {
+            this.error = true;
+            this.errorMessage += "Code: " + list.error.code + " Message: " + list.error.message;
+        }
+        if (list.data !== undefined) {
+            this.error = false;
+            var cs = list.data.comingSoon;
+            if (cs.length === 0) {
+                this.error = true;
+                this.errorMessage += "Empty data array - probable date error";
+            }
+            for (i = 0; i < cs.length; i += 1) {
+                for (j = 0; j < cs[i].movies.length; j += 1) {
+                    if (cs[i].movies[j].languages.indexOf("English") !== -1) {
+                        this.movieList.push(cs[i].movies[j]);
+                    }
+                }
+            }
+        }
     }
 
 });
