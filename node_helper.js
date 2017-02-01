@@ -1,7 +1,7 @@
 var NodeHelper = require("node_helper");
 
 module.exports = NodeHelper.create({
-    recieveSocketNotification: function (notificiation, payload) {
+    socketNotificationReceived: function (notificiation, payload) {
         if (notificiation === "GET_MOVIES") {
             var nextyear, nextmonth;
             nextyear = payload.year;
@@ -52,7 +52,7 @@ module.exports = NodeHelper.create({
                 }
             }
             payload.movieList = movieList;
-            this.sendSocketNotificiation("MOVIE_LIST", payload)
+            this.sendSocketNotification("MOVIE_LIST", payload)
         }
     }
 });

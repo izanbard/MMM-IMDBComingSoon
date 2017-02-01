@@ -115,7 +115,7 @@ Module.register("MMM-IMDBComingSoon", {
         this.sendSocketNotification("GET_MOVIES", {apikey: this.config.apikey, year: this.year, month: this.month})
     },
 
-    socketotificationRecieved: function (notification, payload) {
+    socketNotificationReceived: function (notification, payload) {
         if (notification==="MOVIE_LIST"){
             if (!payload.error) {
                 this.error = false;
