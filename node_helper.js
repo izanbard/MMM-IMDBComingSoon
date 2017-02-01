@@ -1,8 +1,8 @@
 var NodeHelper = require("node_helper");
 
 module.exports = NodeHelper.create({
-    socketNotificationReceived: function (notificiation, payload) {
-        if (notificiation === "GET_MOVIES") {
+    socketNotificationReceived: function (notification, payload) {
+        if (notification === "GET_MOVIES") {
             var nextyear, nextmonth;
             nextyear = payload.year;
             nextmonth = parseInt(payload.month, 10) + 1;
