@@ -56,7 +56,9 @@ module.exports = NodeHelper.create({
             }
             for (i=0;i<cs.length;i+=1) {
                 for (j=0; j<cs[i].movies.length;j+=1) {
-                    this.movieList.push(cs[i].movies[j]);
+                    if (cs[i].movies[j].languages.indexOf("English") !== -1) {
+                        this.movieList.push(cs[i].movies[j]);
+                    }
                 }
             }
         }

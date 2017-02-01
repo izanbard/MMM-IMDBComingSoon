@@ -1,0 +1,16 @@
+.MMM-IMDBComingSoon .wrapper{
+    width:185px;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+}
+
+.MMM-IMDBComingSoon .poster {
+    -webkit-filter: grayscale(100%);
+    margin-bottom: 5px;
+}
+
+.MMM-IMDBComingSoon .plot {
+    width: 185px;
+    word-wrap: break-word;
+}
