@@ -1,8 +1,14 @@
 var NodeHelper = require("node_helper");
 
 module.exports = NodeHelper.create({
+    start: function () {
+        console.log("###################### GOT_HERE ######################");
+    },
+
     socketNotificationReceived: function (notification, payload) {
+        console.log("###################### RXd ######################");
         if (notification === "GET_MOVIES") {
+            console.log("###################### GET_MOVIES ######################");
             var nextyear, nextmonth;
             nextyear = payload.year;
             nextmonth = parseInt(payload.month, 10) + 1;
@@ -12,6 +18,7 @@ module.exports = NodeHelper.create({
             }
             nextmonth = ("0" + nextmonth).slice(-2);
 
+            console.log("###################### GOT_DATES ######################");
             this.getData(payload.apikey, payload.year, payload.month);
             this.getData(payload.apikey, nextyear, nextmonth);
         }
@@ -19,11 +26,15 @@ module.exports = NodeHelper.create({
 
     getData: function (apikey, year, month) {
         var url = "http://www.myapifilms.com/imdb/comingSoon?token=" + apikey + "&format=json&language=en-gb&date=" + year + "-" + month;
+        console.log("###################### URL ######################");
+        console.log(url);
         var xhr = new XMLHttpRequest();
         var self = this;
 
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function() {
+            console.log("###################### READY_STATE ######################");
+            console.log(this.readyState);
             if (this.readyState === 4) {
                 self.processList(JSON.parse(this.responseText));
             }
@@ -32,12 +43,14 @@ module.exports = NodeHelper.create({
     },
 
     processList: function (list) {
+        console.log("###################### PROCESSING_LIST ######################");
         var i, j, movieList = [], payload = {};
         if (list.error !== undefined) {
             payload.error = true;
             payload.errorMessage += "Code: " + list.error.code + " Message: " + list.error.message;
         }
         if (list.data !== undefined) {
+            console.log("###################### GOT_DATA ######################");
             payload.error = false;
             var cs = list.data.comingSoon;
             if (cs.length === 0) {
@@ -52,6 +65,8 @@ module.exports = NodeHelper.create({
                 }
             }
             payload.movieList = movieList;
+            console.log("###################### SENDING ######################");
+            console.log(payload);
             this.sendSocketNotification("MOVIE_LIST", payload)
         }
     }
