@@ -11,10 +11,10 @@ Module.register("MMM-IMDBComingSoon", {
     start: function () {
         this.validConfig = this.checkConfig();
         if (this.validConfig) {
-            this.reloadData();
-            this.reloadDataTimerID = setInterval(this.reloadData(), this.config.reloadInterval);
             this.loaded = false;
             this.error = false;
+            this.reloadData();
+            this.reloadDataTimerID = setInterval(this.reloadData(), this.config.reloadInterval);
         }
         this.updateDom(this.config.animationSpeed);
     },
@@ -109,7 +109,7 @@ Module.register("MMM-IMDBComingSoon", {
         return JSON.parse(xhr.responseText);
     },
 
-    reloadData: function (payload) {
+    reloadData: function () {
         var now = new Date();
         this.year = now.getFullYear();
         this.month = ("0" + (now.getMonth() + 1)).slice(-2);
@@ -117,7 +117,7 @@ Module.register("MMM-IMDBComingSoon", {
         this.errorMessage = "";
         this.movieList = [];
         var nextyear, nextmonth;
-        nextyear = payload.year;
+        nextyear = this.year;
         nextmonth = parseInt(this.month, 10) + 1;
         if (nextmonth >= 13) {
             nextmonth = 1;
