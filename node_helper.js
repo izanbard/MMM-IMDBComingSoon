@@ -25,13 +25,13 @@ module.exports = NodeHelper.create({
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function() {
             if (this.readyState === 4) {
-                self.processlist(JSON.parse(this.responseText));
+                self.processList(JSON.parse(this.responseText));
             }
         };
         xhr.send();
     },
 
-    processList: function (listJSON) {
+    processList: function (list) {
         var i, j, movieList = [], payload = {};
         if (list.error !== undefined) {
             payload.error = true;
