@@ -101,19 +101,6 @@ Module.register("MMM-IMDBComingSoon", {
         return true;
     },
 
-    getData: function (apikey, year, month) {
-        var url = "http://www.myapifilms.com/imdb/comingSoon?token=" + apikey + "&format=json&language=en-gb&date=" + year + "-" + month;
-        var xhr = new XMLHttpRequest();
-        var self = this;
-        xhr.open("GET", url, true);
-        xhr.onreadystatechange = function() {
-            if (this.readyState === 4) {
-                self.processlist(JSON.parse(this.responseText));
-            }
-        };
-        xhr.send();
-    },
-
     reloadData: function () {
         var now = new Date();
         this.year = now.getFullYear();
@@ -123,55 +110,32 @@ Module.register("MMM-IMDBComingSoon", {
         if (this.cycleListTimerID !== undefined) {
             clearInterval(this.cycleListTimerID);
         }
+        this.loaded = false;
         this.movieList = [];
-        var nextyear, nextmonth;
-        nextyear = this.year;
-        nextmonth = parseInt(this.month, 10) + 1;
-        if (nextmonth >= 13) {
-            nextmonth = 1;
-            nextyear = (parseInt(nextyear, 10) + 1).toString();
-        }
-        nextmonth = ("0" + nextmonth).slice(-2);
-
-        this.getData(this.config.apikey, this.year, this.month);
-        this.getData(this.config.apikey, nextyear, nextmonth);
+        this.sendSocketNotification("GET_MOVIES", {apikey: this.config.apikey, year: this.year, month: this.month})
     },
 
-    processlist: function (list) {
-        var i, j;
-        if (list.error !== undefined) {
-            this.error = true;
-            this.errorMessage += "Code: " + list.error.code + " Message: " + list.error.message;
-        }
-        if (list.data !== undefined) {
-            this.error = false;
-            var cs = list.data.comingSoon;
-            if (cs.length === 0) {
-                this.error = true;
-                this.errorMessage += "Empty data array - probable date error";
-            }
-            for (i = 0; i < cs.length; i += 1) {
-                for (j = 0; j < cs[i].movies.length; j += 1) {
-                    if (cs[i].movies[j].languages.indexOf("English") !== -1) {
-                        this.movieList.push(cs[i].movies[j]);
-                    }
+    socketotificationRecieved: function (notification, payload) {
+        if (notification==="MOVIE_LIST"){
+            if (!payload.error) {
+                this.error = false;
+                this.activeItem = 0;
+                this.movieList.concat(payload.movieList);
+                if (!this.loaded) {
+                    this.loaded = true;
+                    this.cycleListTimerID = setInterval(this.updateDom(this.config.animationSpeed), this.config.dataSwapInterval);
                 }
+            } else {
+                this.loaded = false;
+                this.error = true;
+                this.errorMessage = payload.errorMessage;
+                if (this.cycleListTimerID !== undefined) {
+                    clearInterval(this.cycleListTimerID);
+                }
+                setTimeout(this.reloadData(), 60 * 1000)
             }
+            this.updateDom(this.config.animationSpeed);
         }
-        if (!this.error) {
-            this.activeItem = 0;
-            if (!this.loaded) {
-                this.loaded = true;
-                this.cycleListTimerID = setInterval(this.updateDom(this.config.animationSpeed), this.config.dataSwapInterval);
-            }
-        } else {
-            this.loaded = false;
-            if (this.cycleListTimerID !== undefined) {
-                clearInterval(this.cycleListTimerID);
-            }
-            setTimeout(this.reloadData(), 60 * 1000)
-        }
-        this.updateDom(this.config.animationSpeed);
     }
 
 });
