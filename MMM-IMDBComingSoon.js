@@ -9,6 +9,7 @@ Module.register("MMM-IMDBComingSoon", {
     },
 
     start: function () {
+        this.guid = this.createPseudoGUID();
         this.validConfig = this.checkConfig();
         if (this.validConfig) {
             this.loaded = false;
@@ -126,11 +127,11 @@ Module.register("MMM-IMDBComingSoon", {
         this.movieList = [];
         this.activeItem = 0;
         console.log("reloading IMDB data");
-        this.sendSocketNotification("GET_MOVIES", {id: this._socket.socket.id, apikey: this.config.apikey, year: this.year, month: this.month})
+        this.sendSocketNotification("GET_MOVIES", {id: this.guid, apikey: this.config.apikey, year: this.year, month: this.month})
     },
 
     socketNotificationReceived: function (notification, payload) {
-        if (payload.id !== this._socket.socket.id) {
+        if (payload.id !== this.guid) {
             return;
         }
         if (notification === "MOVIE_LIST") {
@@ -175,6 +176,16 @@ Module.register("MMM-IMDBComingSoon", {
         this.reloadDataTimerID = setInterval(function () {
             self.reloadData();
         }, this.config.reloadInterval);
+    },
+
+    createPseudoGUID: function () {
+        return this.pseudoGUIDHelper() + this.pseudoGUIDHelper() + '-' + this.pseudoGUIDHelper() + '-' + this.pseudoGUIDHelper() + '-' + this.pseudoGUIDHelper() + '-' + this.pseudoGUIDHelper() + this.pseudoGUIDHelper() + this.pseudoGUIDHelper();
+    },
+
+    pseudoGUIDHelper: function () {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
     }
 
 });
