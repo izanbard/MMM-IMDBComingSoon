@@ -126,10 +126,13 @@ Module.register("MMM-IMDBComingSoon", {
         this.movieList = [];
         this.activeItem = 0;
         console.log("reloading IMDB data");
-        this.sendSocketNotification("GET_MOVIES", {apikey: this.config.apikey, year: this.year, month: this.month})
+        this.sendSocketNotification("GET_MOVIES", {id: this._socket.socket.id, apikey: this.config.apikey, year: this.year, month: this.month})
     },
 
     socketNotificationReceived: function (notification, payload) {
+        if (payload.id !== this._socket.socket.id) {
+            return;
+        }
         if (notification === "MOVIE_LIST") {
             if (!payload.error) {
                 this.error = false;
@@ -170,7 +173,7 @@ Module.register("MMM-IMDBComingSoon", {
 
         var self = this;
         this.reloadDataTimerID = setInterval(function () {
-            self.reloadData()
+            self.reloadData();
         }, this.config.reloadInterval);
     }
 

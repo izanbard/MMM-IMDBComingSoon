@@ -13,12 +13,12 @@ module.exports = NodeHelper.create({
             }
             nextmonth = ("0" + nextmonth).slice(-2);
 
-            this.getData(payload.apikey, payload.year, payload.month);
-            this.getData(payload.apikey, nextyear, nextmonth);
+            this.getData(payload.id, payload.apikey, payload.year, payload.month);
+            this.getData(payload.id, payload.apikey, nextyear, nextmonth);
         }
     },
 
-    getData: function (apikey, year, month) {
+    getData: function (id, apikey, year, month) {
         var host = "www.myapifilms.com";
         var path = "/imdb/comingSoon?token=" + apikey + "&format=json&language=en-gb&date=" + year + "-" + month;
         var self = this;
@@ -32,13 +32,13 @@ module.exports = NodeHelper.create({
                 body += data;
             });
             responce.on('end', function () {
-                self.processList(JSON.parse(body))
+                self.processList(id, JSON.parse(body))
             });
         });
 
     },
 
-    processList: function (list) {
+    processList: function (id, list) {
         var i, j, movieList = [], payload = {};
         if (list.error !== undefined) {
             payload.error = true;
@@ -59,6 +59,7 @@ module.exports = NodeHelper.create({
                 }
             }
             payload.movieList = movieList;
+            payload.id = id;
             this.sendSocketNotification("MOVIE_LIST", payload)
         }
     }
