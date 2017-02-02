@@ -26,7 +26,7 @@ module.exports = NodeHelper.create({
     },
 
     getData: function (apikey, year, month) {
-        var host = "http://www.myapifilms.com";
+        var host = "www.myapifilms.com";
         var path = "/imdb/comingSoon?token=" + apikey + "&format=json&language=en-gb&date=" + year + "-" + month;
         console.log("###################### URL ######################");
         console.log(host+path);
