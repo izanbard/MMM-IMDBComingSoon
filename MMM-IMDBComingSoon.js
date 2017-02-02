@@ -106,11 +106,10 @@ Module.register("MMM-IMDBComingSoon", {
         this.month = ("0" + (now.getMonth() + 1)).slice(-2);
         this.error = false;
         this.errorMessage = "";
-        if (this.cycleListTimerID !== undefined) {
-            clearInterval(this.cycleListTimerID);
-        }
         this.loaded = false;
         this.movieList = [];
+        this.activeItem = 0;
+        console.log("reloading IMDB data")
         this.sendSocketNotification("GET_MOVIES", {apikey: this.config.apikey, year: this.year, month: this.month})
     },
 
@@ -118,22 +117,18 @@ Module.register("MMM-IMDBComingSoon", {
         if (notification==="MOVIE_LIST"){
             if (!payload.error) {
                 this.error = false;
-                this.activeItem = 0;
                 this.movieList = this.movieList.concat(payload.movieList);
                 if (!this.loaded) {
                     this.loaded = true;
                     this.cycleListTimerID = setInterval(this.updateDom(this.config.animationSpeed), this.config.dataSwapInterval);
+                    console.log("animation timer" + this.cycleListTimerID);
                 }
             } else {
                 this.loaded = false;
                 this.error = true;
                 this.errorMessage = payload.errorMessage;
-                if (this.cycleListTimerID !== undefined) {
-                    clearInterval(this.cycleListTimerID);
-                }
                 setTimeout(this.reloadData(), 60 * 1000)
             }
-            this.updateDom(this.config.animationSpeed);
         }
     }
 
