@@ -69,7 +69,7 @@ Module.register("MMM-IMDBComingSoon", {
         var rDate = new Date();
         rDate.setFullYear(
             parseInt(this.movieList[this.activeItem].releaseDate.slice(0, 4)),
-            parseInt(this.movieList[this.activeItem].releaseDate.slice(4, 6))+1,
+            parseInt(this.movieList[this.activeItem].releaseDate.slice(4, 6))-1,
             parseInt(this.movieList[this.activeItem].releaseDate.slice(6))
         );
         releaseDate.innerHTML = "Date: " + rDate.toDateString();
