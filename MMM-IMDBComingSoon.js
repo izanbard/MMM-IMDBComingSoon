@@ -72,7 +72,7 @@ Module.register("MMM-IMDBComingSoon", {
         releaseDate.innerHTML = "Date: " + rDate.toDateString();
         contentDiv.appendChild(releaseDate);
 
-        if (this.movieList[this.activeItem].runtime === undefined) {
+        if (this.movieList[this.activeItem].runtime !== undefined) {
             var runtime = document.createElement("div");
             runtime.classList.add("bright", "xsmall");
             runtime.innerHTML = "Run Time: " + this.movieList[this.activeItem].runtime;
@@ -82,8 +82,8 @@ Module.register("MMM-IMDBComingSoon", {
         var plot = document.createElement("div");
         plot.classList.add("xsmall");
         var editedPlot = this.movieList[this.activeItem].plot;
-        if (editedPlot.length > 250) {
-            editedPlot = editedPlot.slice(0, 247) + "...";
+        if (editedPlot.length > 500) {
+            editedPlot = editedPlot.slice(0, 497) + "...";
         }
         plot.innerHTML = editedPlot;
         contentDiv.appendChild(plot);
