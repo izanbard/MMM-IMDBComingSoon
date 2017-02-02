@@ -127,7 +127,12 @@ Module.register("MMM-IMDBComingSoon", {
         this.movieList = [];
         this.activeItem = 0;
         console.log("reloading IMDB data");
-        this.sendSocketNotification("GET_MOVIES", {id: this.guid, apikey: this.config.apikey, year: this.year, month: this.month})
+        this.sendSocketNotification("GET_MOVIES", {
+            id: this.guid,
+            apikey: this.config.apikey,
+            year: this.year,
+            month: this.month
+        })
     },
 
     socketNotificationReceived: function (notification, payload) {
@@ -138,6 +143,17 @@ Module.register("MMM-IMDBComingSoon", {
             if (!payload.error) {
                 this.error = false;
                 this.movieList = this.movieList.concat(payload.movieList);
+                this.movieList.sort(function (a, b) {
+                    var x = a.releaseDate.toString();
+                    var y = b.releaseDate.toString();
+                    if (x < y) {
+                        return -1;
+                    }
+                    if (x > y) {
+                        return 1;
+                    }
+                    return 0;
+                });
                 if (!this.loaded) {
                     this.loaded = true;
                     this.updateDomTimer();
@@ -179,7 +195,18 @@ Module.register("MMM-IMDBComingSoon", {
     },
 
     createPseudoGUID: function () {
-        return this.pseudoGUIDHelper() + this.pseudoGUIDHelper() + '-' + this.pseudoGUIDHelper() + '-' + this.pseudoGUIDHelper() + '-' + this.pseudoGUIDHelper() + '-' + this.pseudoGUIDHelper() + this.pseudoGUIDHelper() + this.pseudoGUIDHelper();
+        return this.pseudoGUIDHelper() +
+            this.pseudoGUIDHelper() +
+            '-' +
+            this.pseudoGUIDHelper() +
+            '-' +
+            this.pseudoGUIDHelper() +
+            '-' +
+            this.pseudoGUIDHelper() +
+            '-' +
+            this.pseudoGUIDHelper() +
+            this.pseudoGUIDHelper() +
+            this.pseudoGUIDHelper();
     },
 
     pseudoGUIDHelper: function () {
