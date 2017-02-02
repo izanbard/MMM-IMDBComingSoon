@@ -68,9 +68,9 @@ Module.register("MMM-IMDBComingSoon", {
         releaseDate.classList.add("bright", "small");
         var rDate = new Date();
         rDate.setFullYear(
-            this.movieList[this.activeItem].releaseDate.slice(0, 4),
-            this.movieList[this.activeItem].releaseDate.slice(4, 6),
-            this.movieList[this.activeItem].releaseDate.slice(6)
+            parseInt(this.movieList[this.activeItem].releaseDate.slice(0, 4)),
+            parseInt(this.movieList[this.activeItem].releaseDate.slice(4, 6))+1,
+            parseInt(this.movieList[this.activeItem].releaseDate.slice(6))
         );
         releaseDate.innerHTML = "Date: " + rDate.toDateString();
         contentDiv.appendChild(releaseDate);
