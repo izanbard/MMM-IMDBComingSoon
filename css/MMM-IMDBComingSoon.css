@@ -8,6 +8,7 @@
 .MMM-IMDBComingSoon .poster {
     -webkit-filter: grayscale(100%);
     margin-bottom: 5px;
+    margin-right: 5px;
     max-width: 185px;
     float: left;
 }
