@@ -19,7 +19,7 @@ Module.register("MMM-IMDBComingSoon", {
     },
 
     getHeader: function () {
-        if (this.data.header === "") {
+        if (this.data.header === "" || this.data.header === undefined) {
             this.data.header = "IMDB Coming Soon";
         }
         return this.data.header;
@@ -119,7 +119,7 @@ Module.register("MMM-IMDBComingSoon", {
             if (!payload.error) {
                 this.error = false;
                 this.activeItem = 0;
-                this.movieList.concat(payload.movieList);
+                this.movieList = this.movieList.concat(payload.movieList);
                 if (!this.loaded) {
                     this.loaded = true;
                     this.cycleListTimerID = setInterval(this.updateDom(this.config.animationSpeed), this.config.dataSwapInterval);
