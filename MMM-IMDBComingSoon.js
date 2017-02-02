@@ -50,7 +50,7 @@ Module.register("MMM-IMDBComingSoon", {
         }
 
         var title = document.createElement("div");
-        title.classList.add("bright", "small");
+        title.classList.add("bold", "medium");
         title.innerHTML = this.movieList[this.activeItem].title;
         wrapper.appendChild(title);
 
@@ -70,10 +70,12 @@ Module.register("MMM-IMDBComingSoon", {
         releaseDate.innerHTML = "Date: " + rDate.toDateString();
         wrapper.appendChild(releaseDate);
 
-        var runtime = document.createElement("div");
-        runtime.classList.add("bright", "xsmall");
-        runtime.innerHTML = "Run Time: " + this.movieList[this.activeItem].runtime;
-        wrapper.appendChild(runtime);
+        if (this.movieList[this.activeItem].runtime === undefined) {
+            var runtime = document.createElement("div");
+            runtime.classList.add("bright", "xsmall");
+            runtime.innerHTML = "Run Time: " + this.movieList[this.activeItem].runtime;
+            wrapper.appendChild(runtime);
+        }
 
         var plot = document.createElement("div");
         plot.classList.add("bright", "xsmall");
