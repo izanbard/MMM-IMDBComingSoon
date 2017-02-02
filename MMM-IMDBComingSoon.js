@@ -54,13 +54,15 @@ Module.register("MMM-IMDBComingSoon", {
         title.innerHTML = this.movieList[this.activeItem].title;
         wrapper.appendChild(title);
 
+        var contentDiv = document.createElement("div");
+
         var poster = document.createElement("img");
         poster.classList.add("poster");
         poster.src = this.movieList[this.activeItem].urlPoster;
-        wrapper.appendChild(poster);
+        contentDiv.appendChild(poster);
 
         var releaseDate = document.createElement("div");
-        releaseDate.classList.add("bright", "xsmall");
+        releaseDate.classList.add("bright", "small");
         var rDate = new Date();
         rDate.setFullYear(
             this.movieList[this.activeItem].releaseDate.slice(0, 4),
@@ -68,24 +70,25 @@ Module.register("MMM-IMDBComingSoon", {
             this.movieList[this.activeItem].releaseDate.slice(6)
         );
         releaseDate.innerHTML = "Date: " + rDate.toDateString();
-        wrapper.appendChild(releaseDate);
+        contentDiv.appendChild(releaseDate);
 
         if (this.movieList[this.activeItem].runtime === undefined) {
             var runtime = document.createElement("div");
             runtime.classList.add("bright", "xsmall");
             runtime.innerHTML = "Run Time: " + this.movieList[this.activeItem].runtime;
-            wrapper.appendChild(runtime);
+            contentDiv.appendChild(runtime);
         }
 
         var plot = document.createElement("div");
-        plot.classList.add("bright", "xsmall");
+        plot.classList.add("xsmall");
         var editedPlot = this.movieList[this.activeItem].plot;
         if (editedPlot.length > 250) {
             editedPlot = editedPlot.slice(0, 247) + "...";
         }
         plot.innerHTML = editedPlot;
-        wrapper.appendChild(plot);
+        contentDiv.appendChild(plot);
 
+        wrapper.appendChild(contentDiv);
         this.activeItem += 1;
         if (this.activeItem >= this.movieList.length) {
             this.activeItem = 0;

@@ -8,6 +8,8 @@
 .MMM-IMDBComingSoon .poster {
     -webkit-filter: grayscale(100%);
     margin-bottom: 5px;
+    max-width: 185px;
+    float: left;
 }
 
 .MMM-IMDBComingSoon .plot {
