@@ -21,7 +21,7 @@ Module.register("MMM-IMDBComingSoon", {
     getHeader: function () {
         if (this.movieList !== undefined) {
             if (this.movieList.length > 0) {
-                return this.data.header + " (" + (this.activeItem + 1) + "/" + this.movieList.length + ")";
+                return this.data.header + " (" + (this.activeItem === 0 ? this.movieList.length : this.activeItem) + "/" + this.movieList.length + ")";
             }
         }
         return this.data.header
@@ -69,7 +69,7 @@ Module.register("MMM-IMDBComingSoon", {
         var rDate = new Date();
         rDate.setFullYear(
             parseInt(this.movieList[this.activeItem].releaseDate.slice(0, 4)),
-            parseInt(this.movieList[this.activeItem].releaseDate.slice(4, 6))-1,
+            parseInt(this.movieList[this.activeItem].releaseDate.slice(4, 6)) - 1,
             parseInt(this.movieList[this.activeItem].releaseDate.slice(6))
         );
         releaseDate.innerHTML = "Date: " + rDate.toDateString();
