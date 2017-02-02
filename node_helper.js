@@ -1,4 +1,5 @@
 var NodeHelper = require("node_helper");
+var http = requuire("http");
 
 module.exports = NodeHelper.create({
     start: function () {
@@ -25,21 +26,25 @@ module.exports = NodeHelper.create({
     },
 
     getData: function (apikey, year, month) {
-        var url = "http://www.myapifilms.com/imdb/comingSoon?token=" + apikey + "&format=json&language=en-gb&date=" + year + "-" + month;
+        var host = "http://www.myapifilms.com";
+        var path = "/imdb/comingSoon?token=" + apikey + "&format=json&language=en-gb&date=" + year + "-" + month;
         console.log("###################### URL ######################");
         console.log(url);
-        var xhr = new XMLHttpRequest();
         var self = this;
 
-        xhr.open("GET", url, true);
-        xhr.onreadystatechange = function() {
-            console.log("###################### READY_STATE ######################");
-            console.log(this.readyState);
-            if (this.readyState === 4) {
-                self.processList(JSON.parse(this.responseText));
-            }
-        };
-        xhr.send();
+        http.get({
+            host: host,
+            path: path
+        }, function (responce) {
+            var body = '';
+            responce.on('data', function (data) {
+                body += data;
+            });
+            responce.on('end', function () {
+                self.processList(JSON.parse(body))
+            });
+        });
+
     },
 
     processList: function (list) {
