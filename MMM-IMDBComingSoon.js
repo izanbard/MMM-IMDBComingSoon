@@ -13,8 +13,7 @@ Module.register("MMM-IMDBComingSoon", {
         if (this.validConfig) {
             this.loaded = false;
             this.error = false;
-            this.reloadData();
-            this.reloadDataTimerID = setInterval(this.reloadData, this.config.reloadInterval);
+            this.updateListTimer();
         }
     },
 
@@ -114,14 +113,13 @@ Module.register("MMM-IMDBComingSoon", {
     },
 
     socketNotificationReceived: function (notification, payload) {
-        if (notification==="MOVIE_LIST"){
+        if (notification === "MOVIE_LIST") {
             if (!payload.error) {
                 this.error = false;
                 this.movieList = this.movieList.concat(payload.movieList);
                 if (!this.loaded) {
                     this.loaded = true;
-                    this.updateDomCallback();
-                    this.cycleListTimerID = setInterval(this.updateDomCallback, this.config.dataSwapInterval);
+                    this.updateDomTimer();
                     console.log("animation timer" + this.cycleListTimerID);
                 }
             } else {
@@ -133,8 +131,30 @@ Module.register("MMM-IMDBComingSoon", {
         }
     },
 
-    updateDomCallback: function () {
+    updateDomTimer: function () {
         this.updateDom(this.config.animationSpeed);
+
+        if (!this.cycleListTimerID === undefined) {
+            clearInterval(this.cycleListTimerID);
+        }
+
+        var self = this;
+        this.cycleListTimerID = setInterval(function () {
+                self.updateDom(self.config.animationSpeed);
+            }, this.config.dataSwapInterval);
+    },
+
+    updateListTimer: function () {
+        this.reloadData();
+
+        if (!this.reloadDataTimerID === undefined) {
+            clearInterval(this.reloadDataTimerID);
+        }
+
+        var self = this;
+        this.reloadDataTimerID = setInterval(function () {
+                self.reloadData()
+            }, this.config.reloadInterval);
     }
 
 });
