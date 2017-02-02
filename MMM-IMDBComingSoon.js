@@ -14,13 +14,13 @@ Module.register("MMM-IMDBComingSoon", {
             this.loaded = false;
             this.error = false;
             this.reloadData();
-            this.reloadDataTimerID = setInterval(this.reloadData(), this.config.reloadInterval);
+            this.reloadDataTimerID = setInterval(this.reloadData, this.config.reloadInterval);
         }
     },
 
     getHeader: function () {
         if (this.data.header === "" || this.data.header === undefined) {
-            this.data.header = "IMDB Coming Soon";
+            return "IMDB Coming Soon";
         }
         return this.data.header;
     },
@@ -109,7 +109,7 @@ Module.register("MMM-IMDBComingSoon", {
         this.loaded = false;
         this.movieList = [];
         this.activeItem = 0;
-        console.log("reloading IMDB data")
+        console.log("reloading IMDB data");
         this.sendSocketNotification("GET_MOVIES", {apikey: this.config.apikey, year: this.year, month: this.month})
     },
 
@@ -120,7 +120,8 @@ Module.register("MMM-IMDBComingSoon", {
                 this.movieList = this.movieList.concat(payload.movieList);
                 if (!this.loaded) {
                     this.loaded = true;
-                    this.cycleListTimerID = setInterval(this.updateDom(this.config.animationSpeed), this.config.dataSwapInterval);
+                    this.updateDomCallback();
+                    this.cycleListTimerID = setInterval(this.updateDomCallback, this.config.dataSwapInterval);
                     console.log("animation timer" + this.cycleListTimerID);
                 }
             } else {
@@ -130,6 +131,10 @@ Module.register("MMM-IMDBComingSoon", {
                 setTimeout(this.reloadData(), 60 * 1000)
             }
         }
+    },
+
+    updateDomCallback: function () {
+        this.updateDom(this.config.animationSpeed);
     }
 
 });
