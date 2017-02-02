@@ -29,7 +29,7 @@ module.exports = NodeHelper.create({
         var host = "http://www.myapifilms.com";
         var path = "/imdb/comingSoon?token=" + apikey + "&format=json&language=en-gb&date=" + year + "-" + month;
         console.log("###################### URL ######################");
-        console.log(url);
+        console.log(host+path);
         var self = this;
 
         http.get({
