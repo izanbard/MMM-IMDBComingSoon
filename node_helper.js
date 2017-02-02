@@ -1,5 +1,5 @@
 var NodeHelper = require("node_helper");
-var http = requuire("http");
+var http = require("http");
 
 module.exports = NodeHelper.create({
     start: function () {
