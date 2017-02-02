@@ -79,11 +79,18 @@ Module.register("MMM-IMDBComingSoon", {
             contentDiv.appendChild(runtime);
         }
 
+        if (this.movieList[this.activeItem].rated !== undefined) {
+            var rated = document.createElement("div");
+            rated.classList.add("bright", "xsmall");
+            rated.innerHTML = "Rated: " + this.movieList[this.activeItem].rated;
+            contentDiv.appendChild(rated);
+        }
+
         var plot = document.createElement("div");
         plot.classList.add("xsmall");
         var editedPlot = this.movieList[this.activeItem].plot;
-        if (editedPlot.length > 500) {
-            editedPlot = editedPlot.slice(0, 497) + "...";
+        if (editedPlot.length > 450) {
+            editedPlot = editedPlot.slice(0, 447) + "...";
         }
         plot.innerHTML = editedPlot;
         contentDiv.appendChild(plot);
