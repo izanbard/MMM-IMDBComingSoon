@@ -96,6 +96,9 @@ Module.register("MMM-IMDBComingSoon", {
             this.errorMessage = "Invalid API Key!";
             return false;
         }
+        if (this.config.reloadInterval < 60 * 1000) {
+            this.config.reloadInterval = 60 * 1000;
+        }
         return true;
     },
 
@@ -140,8 +143,8 @@ Module.register("MMM-IMDBComingSoon", {
 
         var self = this;
         this.cycleListTimerID = setInterval(function () {
-                self.updateDom(self.config.animationSpeed);
-            }, this.config.dataSwapInterval);
+            self.updateDom(self.config.animationSpeed);
+        }, this.config.dataSwapInterval);
     },
 
     updateListTimer: function () {
@@ -153,8 +156,8 @@ Module.register("MMM-IMDBComingSoon", {
 
         var self = this;
         this.reloadDataTimerID = setInterval(function () {
-                self.reloadData()
-            }, this.config.reloadInterval);
+            self.reloadData()
+        }, this.config.reloadInterval);
     }
 
 });
