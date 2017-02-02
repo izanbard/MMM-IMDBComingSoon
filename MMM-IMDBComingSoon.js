@@ -18,10 +18,12 @@ Module.register("MMM-IMDBComingSoon", {
     },
 
     getHeader: function () {
-        if (this.data.header === "" || this.data.header === undefined) {
-            return "IMDB Coming Soon";
+        if (this.movieList !== undefined) {
+            if (this.movieList.length > 0) {
+                return this.data.header + " (" + (this.activeItem + 1) + "/" + this.movieList.length + ")";
+            }
         }
-        return this.data.header;
+        return this.data.header
     },
 
     getStyles: function () {
