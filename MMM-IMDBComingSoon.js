@@ -108,6 +108,7 @@ Module.register("MMM-IMDBComingSoon", {
 
     checkConfig: function () {
         if (this.config.apikey === "You Must Change This Value") {
+            this.error = true;
             this.errorMessage = "Invalid API Key!";
             return false;
         }

@@ -1,5 +1,5 @@
 #jetbrains IDE
-.idea
+/.idea/
 
 # Logs
 logs
