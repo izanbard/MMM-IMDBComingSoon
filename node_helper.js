@@ -1,5 +1,5 @@
 var NodeHelper = require("node_helper");
-var http = require("http");
+var https = require("https");
 
 module.exports = NodeHelper.create({
     socketNotificationReceived: function (notification, payload) {
@@ -23,7 +23,7 @@ module.exports = NodeHelper.create({
         var path = "/imdb/comingSoon?token=" + apikey + "&format=json&language=en-gb&date=" + year + "-" + month;
         var self = this;
 
-        http.get({
+        https.get({
             host: host,
             path: path
         }, function (responce) {
